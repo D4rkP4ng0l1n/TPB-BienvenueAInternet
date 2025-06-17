@@ -1,6 +1,6 @@
 # TPB-BienvenueAInternet
 
-## 1.5 Questions intermédiaires
+## 1.5 Questions intermédiaires -  Lire une réponse HTTP
 
 ### 1. Quelle est la structure de la ligne `GET / HTTP/1.1` ? Quels sont les trois éléments et leur rôle ?
 
@@ -88,25 +88,61 @@ Oui, c’est une page HTML d’erreur typique, souvent semblable à ceci :
 </html>
 ```
 
-
-
+---
     
-2.1.2 Questions
+## 2.1.2 Questions — Implémenter un mini-serveur HTTP (TCP brut)
 
-1. Est-ce que votre client (navigateur, curl, telnet…) reçoit bien une réponse ? Quel contenu voyez-vous à l’écran ?
-   
-2. Quelle est la structure exacte du message que vous renvoyez (statut, entêtes, ligne vide, corps) ?
-   
-3. Que se passe-t-il si vous changez Content-Length: 12 en une autre valeur ?
-   
-4. Que se passe-t-il si vous omettez complètement cette ligne ?
-   
-5. Que se passe-t-il si vous supprimez la ligne vide entre les entêtes et le message ? Le navigateur ou le client affiche-t-il encore quelque chose ?
-   
-6. Le message s’affiche-t-il dans telnet ? Et dans curl ? Et dans un navigateur ? Pourquoi certains outils sont-ils plus stricts que d’autres ?
+### 1. Est-ce que votre client (navigateur, curl, telnet…) reçoit bien une réponse ? Quel contenu voyez-vous à l’écran ?
 
+Oui, j’utilise le **navigateur** comme client en accédant à l’URL `http://localhost:8080`.  
+À l’écran, le message suivant est affiché : Hello World!
 
-2.2.3 Questions
+---
+
+### 2. Quelle est la structure exacte du message que vous renvoyez (statut, entêtes, ligne vide, corps) ?
+
+La réponse envoyée par le serveur est structurée ainsi :
+- HTTP/1.1 200 OK             ← Ligne de statut
+- Content-Type: text/plain    ← Entête
+- Content-Length: 12          ← Entête
+- Connection: Close           ← Entête
+- `                `          ← Ligne vide
+- Hello World!                ← Corps
+
+---
+
+### 3. Que se passe-t-il si vous changez `Content-Length: 12` en une autre valeur ?
+
+- Si la valeur est **supérieure** à 12 : aucun effet visible immédiat (le client attend potentiellement plus de contenu).
+- Si la valeur est **inférieure** à 12 : le client n'affiche que les **X premiers caractères** du corps.
+  - Exemple : `Content-Length: 2` → le navigateur affiche `He`.
+
+---
+
+### 4. Que se passe-t-il si vous omettez complètement cette ligne ?
+
+Sans l’en-tête `Content-Length`, certains clients comme le **navigateur** ou **curl** peuvent :
+- Attendre que la connexion se ferme pour déterminer la fin du corps
+- Rien afficher du tout si la fermeture n’intervient pas (comportement indéfini selon le client).
+
+---
+
+### 5. Que se passe-t-il si vous supprimez la ligne vide entre les entêtes et le message ? Le navigateur ou le client affiche-t-il encore quelque chose ?
+
+Non. La ligne vide est **obligatoire** pour séparer les **en-têtes** du **corps**.  
+Sans elle, le client (navigateur, curl…) ne peut pas **parser** correctement la réponse, et n’affichera **rien** (ou renverra une erreur).
+
+---
+
+### 6. Le message s’affiche-t-il dans telnet ? Et dans curl ? Et dans un navigateur ? Pourquoi certains outils sont-ils plus stricts que d’autres ?
+
+- **Telnet** : Oui, car il affiche **tout ce qui est reçu**, sans interprétation.
+- **curl** : Oui, si la réponse est correctement formatée (notamment avec `Content-Length` et la ligne vide).
+- **Navigateur** : Oui, mais il est **plus strict** sur le format HTTP (ligne vide, types MIME, etc.).
+
+---
+
+## 2.2.3 Questions - Serveur avec analyse du chemin
 
 1. Quelle est la structure de la ligne de requête HTTP reçue côté serveur ? Quels sont les trois éléments que vous devez extraire ?
    
