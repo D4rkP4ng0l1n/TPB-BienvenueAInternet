@@ -64,7 +64,7 @@ Elle indique :
 
 ### 7. Quelle est la première ligne non en-tête du corps ? À quoi reconnaît-on la séparation ?
 
-Le corps commence après une **ligne vide (`\r\n`)**. C’est la séparation obligatoire entre les en-têtes et le contenu.
+La première ligne du corps est `cc`. Elle arrive après une **ligne vide (`\r\n`)**. C’est la séparation obligatoire entre les en-têtes et le contenu.
 
 ---
 
