@@ -1,24 +1,94 @@
 # TPB-BienvenueAInternet
 
-1.5 Questions intermédiaires
+## 1.5 Questions intermédiaires
 
-1. Quelle est la structure de la ligne GET / HTTP/1.1 ? Quels sont les trois éléments et leur rôle ?
-   
-2. Pourquoi faut-il appuyer deux fois sur Entrée pour que le serveur réponde ? Que représente cette ligne vide dans le protocole HTTP ?
-   
-3. Que se passe-t-il si vous oubliez cette ligne vide ? Le serveur répond-il quand même ?
-   
-4. Que signifie le code 200 OK dans la réponse ? Qu’indique un code 404 ou 301 ?
+### 1. Quelle est la structure de la ligne `GET / HTTP/1.1` ? Quels sont les trois éléments et leur rôle ?
 
-5. Quelle est la toute première ligne envoyée par le serveur ? Que contientelle ?
-    
-6. Relevez les entêtes présents dans la réponse (Content-Type, Content-Length, etc.) : à quoi servent-ils ?
-    
-7. Quelle est la première ligne non entête du corps ? À quoi reconnaît-on la séparation ?
-    
-8. Que se passe-t-il si vous tapez une URL invalide (ex : GET /truc HTTP/1.1) ? Quel est le code de retour ?
-    
-9. Le contenu retourné dans ce cas est-il aussi du HTML ? Que contient-il exactement ?
+La ligne `GET / HTTP/1.1` est composée de trois éléments :
+- **GET** : méthode HTTP utilisée pour demander une ressource au serveur.
+- **/** : chemin absolu de la ressource (ici, la racine).
+- **HTTP/1.1** : version du protocole utilisée.
+
+---
+
+### 2. Pourquoi faut-il appuyer deux fois sur Entrée pour que le serveur réponde ? Que représente cette ligne vide dans le protocole HTTP ?
+
+Appuyer deux fois sur Entrée ajoute une **ligne vide (`\r\n`)** qui indique la **fin des en-têtes** de la requête. Sans elle, la requête est incomplète, donc ignorée.
+
+---
+
+### 3. Que se passe-t-il si vous oubliez cette ligne vide ? Le serveur répond-il quand même ?
+
+Le serveur ne répond pas. Le serveur considère que la requête n’est **pas terminée** et attend indéfiniment jusqu’à ce que la connexion soit fermée ou expirée.
+
+---
+
+### 4. Que signifie le code `200 OK` dans la réponse ? Qu’indique un code `404` ou `301` ?
+
+- `200 OK` : La requête a été traitée avec succès.
+- `404` : La ressource demandée n'a pas été trouvée.
+- `301` : La ressource demandée n'est pas à l'endroit recherchée.
+
+---
+
+### 5. Quelle est la toute première ligne envoyée par le serveur ? Que contient-elle ?
+
+La première ligne de la réponse HTTP, appelée **ligne de statut**, contient : HTTP/1.1 200 OK
+Elle indique :
+- Le protocole utilisé,
+- La version,
+- Le code de statut,
+- Un message associé.
+
+---
+
+### 6. Relevez les en-têtes présents dans la réponse (Content-Type, Content-Length, etc.) : à quoi servent-ils ?
+
+| En-tête                         | Rôle |
+|----------------------------------|------|
+| `Content-Type: text/html`        | Type de contenu retourné (ici, HTML). |
+| `Transfer-Encoding: chunked`     | La réponse est envoyée en morceaux. |
+| `Connection: keep-alive`         | Maintient la connexion ouverte pour d'autres requêtes. |
+| `Last-Modified`                  | Date de dernière modification de la ressource. |
+| `Cache-Control: max-age=600`     | Durée pendant laquelle la ressource peut être mise en cache. |
+| `Expires`                        | Date d’expiration de la ressource. |
+| `Vary`                           | La réponse peut varier selon certains en-têtes (compression, user-agent...). |
+| `cf-cache-status`                | Statut du cache côté Cloudflare. |
+| `Report-To`, `NEL`               | Utilisés pour les rapports d’erreurs réseau. |
+| `Server: cloudflare`             | Nom du serveur ou du proxy. |
+| `CF-RAY`                         | Identifiant de traçage Cloudflare. |
+| `alt-svc`                        | Offre un service alternatif (ex: HTTP/3). |
+| `server-timing`                  | Indique des mesures de performance côté serveur. |
+
+---
+
+### 7. Quelle est la première ligne non en-tête du corps ? À quoi reconnaît-on la séparation ?
+
+Le corps commence après une **ligne vide (`\r\n`)**. C’est la séparation obligatoire entre les en-têtes et le contenu.
+
+---
+
+### 8. Que se passe-t-il si vous tapez une URL invalide (ex : `GET /truc HTTP/1.1`) ? Quel est le code de retour ?
+
+Le serveur renvoie une réponse d'erreur : 400 Bad Request
+
+---
+
+### 9. Le contenu retourné dans ce cas est-il aussi du HTML ? Que contient-il exactement ?
+
+Oui, c’est une page HTML d’erreur typique, souvent semblable à ceci :
+
+```html
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<hr><center>cloudFlare</center>
+</body>
+</html>
+```
+
+
 
     
 2.1.2 Questions
